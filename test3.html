@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURELIUS | Haute Horlogerie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --dark-gold: #996515;
+            --deep-black: #0a0a0a;
+            --rich-charcoal: #1a1a1a;
+        }
+        body {
+            background-color: var(--deep-black);
+            color: #e5e5e5;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        
+        .gold-gradient {
+            background: linear-gradient(135deg, #D4AF37 0%, #F9E4B7 50%, #996515 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-border {
+            border: 1px solid var(--gold);
+        }
+        .gold-bg {
+            background: linear-gradient(135deg, #D4AF37 0%, #996515 100%);
+        }
+        .gold-bg:hover {
+            background: linear-gradient(135deg, #F9E4B7 0%, #D4AF37 100%);
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--gold);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .watch-card:hover .watch-image {
+            transform: scale(1.05);
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+        .transition-all-custom {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 px-6 py-4 flex justify-between items-center bg-black/80 backdrop-blur-md border-b border-yellow-900/30">
+        <div class="flex items-center gap-8">
+            <a href="#" onclick="navigate('home')" class="font-cinzel text-2xl font-bold gold-gradient tracking-widest">AURELIUS</a>
+            <div class="hidden md:flex gap-6 text-xs uppercase tracking-widest font-semibold">
+                <a href="#" onclick="navigate('home')" class="nav-link">Home</a>
+                <a href="#" onclick="navigate('shop')" class="nav-link">Collections</a>
+                <a href="#" class="nav-link">Heritage</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <button onclick="navigate('cart')" class="relative p-2 hover:text-yellow-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <span id="cart-count" class="absolute top-0 right-0 bg-yellow-600 text-black text-[10px] font-bold px-1.5 rounded-full">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="app" class="pt-20 min-h-screen"></main>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-yellow-900/30 py-12 px-6 text-center">
+        <div class="font-cinzel text-2xl gold-gradient tracking-widest mb-6">AURELIUS</div>
+        <p class="text-gray-500 text-sm max-w-md mx-auto mb-8 italic font-playfair">"Defining time through the lens of timeless elegance."</p>
+        <div class="flex justify-center gap-6 text-gray-400 text-xs uppercase tracking-widest mb-8">
+            <a href="#" class="hover:text-yellow-500">Privacy</a>
+            <a href="#" class="hover:text-yellow-500">Terms</a>
+            <a href="#" class="hover:text-yellow-500">Contact</a>
+        </div>
+        <div class="text-gray-600 text-[10px] uppercase tracking-widest">&copy; 2023 Aurelius Haute Horlogerie. All Rights Reserved.</div>
+    </footer>
+
+    <script>
+        // --- State Management ---
+        const state = {
+            currentPage: 'home',
+            cart: [],
+            products: [
+                { id: 1, name: 'The Sovereign', price: 12500, image: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&q=80&w=800', desc: '18K Rose Gold, Skeleton Dial, Crocodile Strap.' },
+                { id: 2, name: 'Midnight Eclipse', price: 8900, image: 'https://images.unsplash.com/photo-1547996160-817ec97967d3?auto=format&fit=crop&q=80&w=800', desc: 'Brushed Platinum, Obsidian Face, Sapphire Crystal.' },
+                { id: 3, name: 'Azure Imperial', price: 15200, image: 'https://images.unsplash.com/photo-1614164172289-ed2777ca317e?auto=format&fit=crop&q=80&w=800', desc: 'Deep Sea Blue Dial, White Gold Case, Automatic.' },
+                { id: 4, name: 'Solaris Chrono', price: 11000, image: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&q=80&w=800', desc: 'Champagne Gold, Chronograph, Exhibition Back.' },
+                { id: 5, name: 'Lunar Phase', price: 18000, image: 'https://images.unsplash.com/photo-1619134778000-a277a7327b9d?auto=format&fit=crop&q=80&w=800', desc: 'Moonphase complication, Silver accents, Calfskin.' },
+                { id: 6, name: 'The Heritage', price: 9500, image: 'https://images.unsplash.com/photo-1508685096489-7aacd47039ed?auto=format&fit=crop&q=80&w=800', desc: 'Classic 38mm, Gold indices, Mechanical movement.' },
+            ]
+        };
+
+        // --- Routing System ---
+        function navigate(page, productId = null) {
+            state.currentPage = page;
+            render();
+            window.scrollTo(0, 0);
+        }
+
+        // --- Cart Logic ---
+        function addToCart(productId) {
+            const product = state.products.find(p => p.id === productId);
+            state.cart.push(product);
+            updateCartCount();
+            
+            // Subtle feedback
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = 'Added to Collection';
+            btn.classList.add('bg-green-700');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-green-700');
+            }, 1500);
+        }
+
+        function removeFromCart(index) {
+            state.cart.splice(index, 1);
+            updateCartCount();
+            render();
+        }
+
+        function updateCartCount() {
+            document.getElementById('cart-count').innerText = state.cart.length;
+        }
+
+        function calculateTotal() {
+            return state.cart.reduce((sum, item) => sum + item.price, 0);
+        }
+
+        // --- Page Templates ---
+        const Templates = {
+            home: () => `
+                <section class="relative h-[90vh] flex items-center justify-center overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1509048191087-35805385951e?auto=format&fit=crop&q=80&w=1920" class="absolute inset-0 w-full h-full object-cover opacity-40 scale-105 transition-transform duration-1000 hover:scale-100" />
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black"></div>
+                    <div class="relative z-10 text-center px-4">
+                        <h1 class="font-cinzel text-5xl md:text-8xl font-bold gold-gradient mb-6 tracking-tighter">TIMELESS ELEGANCE</h1>
+                        <p class="font-playfair text-xl md:text-2xl text-gray-300 italic mb-10 max-w-2xl mx-auto">Masterpieces of precision, crafted for those who define the era.</p>
+                        <button onclick="navigate('shop')" class="gold-bg text-black font-bold px-10 py-4 uppercase tracking-widest text-sm transition-all-custom">Explore Collections</button>
+                    </div>
+                </section>
+                <section class="py-24 px-6 bg-rich-charcoal">
+                    <div class="max-w-6xl mx-auto text-center">
+                        <h2 class="font-cinzel text-3xl gold-gradient mb-16 tracking-widest uppercase">The Signature Series</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                            ${state.products.slice(0, 3).map(p => `
+                                <div class="watch-card group cursor-pointer" onclick="navigate('product', ${p.id})">
+                                    <div class="overflow-hidden mb-6 gold-border relative">
+                                        <img src="${p.image}" class="watch-image w-full h-80 object-cover transition-all-custom" />
+                                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
+                                    </div>
+                                    <h3 class="font-cinzel text-xl mb-2 tracking-wide">${p.name}</h3>
+                                    <p class="text-gold font-semibold text-lg mb-4">$${p.price.toLocaleString()}</p>
+                                    <div class="text-xs uppercase tracking-widest text-gray-500 group-hover:text-yellow-500 transition-colors">View Details →</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </section>
+            `,
+            shop: () => `
+                <div class="max-w-7xl mx-auto px-6 py-12">
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                        <div>
+                            <h1 class="font-cinzel text-4xl gold-gradient mb-2">The Vault</h1>
+                            <p class="text-gray-400 font-playfair italic">A curated selection of our finest horological achievements.</p>
+                        </div>
+                        <div class="flex gap-4 text-xs uppercase tracking-widest">
+                            <span class="text-yellow-500 border-b border-yellow-500 cursor-pointer">All</span>
+                            <span class="text-gray-500 hover:text-yellow-500 cursor-pointer transition-colors">Gold</span>
+                            <span class="text-gray-500 hover:text-yellow-500 cursor-pointer transition-colors">Platinum</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                        ${state.products.map(p => `
+                            <div class="watch-card group bg-rich-charcoal/50 p-6 gold-border custom-shadow transition-all-custom hover:-translate-y-2">
+                                <div class="overflow-hidden mb-6">
+                                    <img src="${p.image}" class="watch-image w-full h-64 object-cover transition-all-custom" />
+                                </div>
+                                <h3 class="font-cinzel text-2xl mb-2">${p.name}</h3>
+                                <p class="text-gray-400 text-sm mb-6 h-10">${p.desc}</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-yellow-500 font-bold text-xl">$${p.price.toLocaleString()}</span>
+                                    <button onclick="addToCart(${p.id})" class="gold-bg text-black px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all-custom">Add to Cart</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `,
+            product: (id) => {
+                const p = state.products.find(prod => prod.id === id);
+                return `
+                    <div class="max-w-6xl mx-auto px-6 py-12">
+                        <button onclick="navigate('shop')" class="text-gray-500 hover:text-yellow-500 text-xs uppercase tracking-widest mb-8 transition-colors">← Back to Collection</button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                            <div class="gold-border p-2">
+                                <img src="${p.image}" class="w-full h-auto" />
+                            </div>
+                            <div>
+                                <h1 class="font-cinzel text-5xl gold-gradient mb-4">${p.name}</h1>
+                                <p class="text-3xl font-playfair mb-8">$${p.price.toLocaleString()}</p>
+                                <p class="text-gray-400 leading-relaxed mb-10 text-lg">${p.desc} This exceptional timepiece represents the pinnacle of Aurelius craftsmanship, featuring a meticulously hand-finished movement and a case crafted from the highest grade of precious metals.</p>
+                                
+                                <div class="space-y-4 mb-10">
+                                    <div class="flex justify-between border-b border-yellow-900/30 pb-2 text-sm">
+                                        <span class="text-gray-500">Movement</span>
+                                        <span>Automatic Calibre A-12</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-yellow-900/30 pb-2 text-sm">
+                                        <span class="text-gray-500">Water Resistance</span>
+                                        <span>100 Meters</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-yellow-900/30 pb-2 text-sm">
+                                        <span class="text-gray-500">Case Material</span>
+                                        <span>18K Solid Gold / Platinum</span>
+                                    </div>
+                                </div>
+                                
+                                <button onclick="addToCart(${p.id})" class="w-full gold-bg text-black py-5 font-bold uppercase tracking-widest transition-all-custom">Secure This Piece</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+            cart: () => `
+                <div class="max-w-4xl mx-auto px-6 py-12">
+                    <h1 class="font-cinzel text-4xl gold-gradient mb-12 text-center">Your Collection</h1>
+                    ${state.cart.length === 0 ? `
+                        <div class="text-center py-20">
+                            <p class="text-gray-500 italic font-playfair text-xl mb-8">Your vault is currently empty.</p>
+                            <button onclick="navigate('shop')" class="gold-bg text-black px-8 py-3 font-bold uppercase tracking-widest">Begin Your Collection</button>
+                        </div>
+                    ` : `
+                        <div class="space-y-6 mb-12">
+                            ${state.cart.map((item, index) => `
+                                <div class="flex items-center gap-6 bg-rich-charcoal p-6 gold-border custom-shadow">
+                                    <img src="${item.image}" class="w-24 h-24 object-cover" />
+                                    <div class="flex-grow">
+                                        <h3 class="font-cinzel text-xl">${item.name}</h3>
+                                        <p class="text-yellow-500 font-bold">$${item.price.toLocaleString()}</p>
+                                    </div>
+                                    <button onclick="removeFromCart(${index})" class="text-gray-500 hover:text-red-500 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="bg-rich-charcoal p-8 gold-border custom-shadow text-right">
+                            <div class="text-gray-400 uppercase tracking-widest text-sm mb-2">Estimated Total</div>
+                            <div class="text-4xl font-cinzel gold-gradient mb-8">$${calculateTotal().toLocaleString()}</div>
+                            <button onclick="navigate('checkout')" class="gold-bg text-black px-12 py-4 font-bold uppercase tracking-widest transition-all-custom">Proceed to Checkout</button>
+                        </div>
+                    `}
+                </div>
+            `,
+            checkout: () => `
+                <div class="max-w-5xl mx-auto px-6 py-12">
+                    <h1 class="font-cinzel text-4xl gold-gradient mb-12 text-center">Finalize Acquisition</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                        <div class="space-y-6">
+                            <div class="space-y-4">
+                                <h3 class="font-cinzel text-xl text-yellow-500 mb-4 uppercase tracking-widest">Shipping Details</h3>
+                                <input type="text" placeholder="Full Name" class="w-full bg-rich-charcoal border border-yellow-900/30 p-3 focus:outline-none focus:border-yellow-500 transition-colors" />
+                                <input type="email" placeholder="Email Address" class="w-full bg-rich-charcoal border border-yellow-900/30 p-3 focus:outline-none focus:border-yellow-500 transition-colors" />
+                                <input type="text" placeholder="Delivery Address" class="w-full bg-rich-charcoal border border-yellow-900/30 p-3 focus:outline-none focus:border-yellow-500 transition-colors" />
+                                <div class="grid grid-cols-2 gap-4">
+                                    <input type="text" placeholder="City" class="w-full bg-rich-charcoal border border-yellow-900/30 p-3 focus:outline-none focus:border-yellow-500 transition-colors" />
+                                    <input type="text" placeholder="Country" class="w-full bg-rich-charcoal border border-yellow-900/30 p-3 focus:outline-none focus:border-yellow-500 transition-colors" />
+                                </div>
+                            </div>
+                            <div class="space-y-4 pt-6">
+                                <h3 class="font-cinzel text-xl text-yellow-500 mb-4 uppercase tracking-widest">Payment Method</h3>
+                                <div class="bg-rich-charcoal border border-yellow-900/30 p-4 flex items-center justify-between cursor-pointer hover:border-yellow-500 transition-colors">
+                                    <span class="text-sm font-semibold uppercase tracking-widest">Private Wire Transfer</span>
+                                    <div class="w-4 h-4 rounded-full border border-yellow-500 bg-yellow-500"></div>
+                                </div>
+                                <div class="bg-rich-charcoal border border-yellow-900/30 p-4 flex items-center justify-between cursor-pointer hover:border-yellow-500 transition-colors">
+                                    <span class="text-sm font-semibold uppercase tracking-widest">Credit Card (Concierge)</span>
+                                    <div class="w-4 h-4 rounded-full border border-yellow-900/30"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-rich-charcoal p-8 gold-border custom-shadow h-fit">
+                            <h3 class="font-cinzel text-2xl mb-6 uppercase tracking-widest">Order Summary</h3>
+                            <div class="space-y-4 mb-8">
+                                ${state.cart.map(item => `
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-400">${item.name}</span>
+                                        <span>$${item.price.toLocaleString()}</span>
+                                    </div>
+                                `).join('')}
+                                <div class="border-t border-yellow-900/30 pt-4 flex justify-between text-xl font-cinzel gold-gradient">
+                                    <span>Total</span>
+                                    <span>$${calculateTotal().toLocaleString()}</span>
+                                </div>
+                            </div>
+                            <button onclick="navigate('confirmation')" class="w-full gold-bg text-black py-5 font-bold uppercase tracking-widest transition-all-custom">Complete Purchase</button>
+                        </div>
+                    </div>
+                </div>
+            `,
+            confirmation: () => `
+                <div class="max-w-2xl mx-auto px-6 py-24 text-center">
+                    <div class="w-20 h-20 gold-bg rounded-full flex items-center justify-center mx-auto mb-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <h1 class="font-cinzel text-5xl gold-gradient mb-6">Acquisition Confirmed</h1>
+                    <p class="font-playfair text-xl text-gray-400 italic mb-12">Your timepiece is being prepared for secure transit. Our concierge will contact you shortly with tracking and authentication details.</p>
+                    <button onclick="navigate('home')" class="border border-yellow-600 text-yellow-600 px-10 py-4 uppercase tracking-widest text-sm hover:bg-yellow-600 hover:text-black transition-all-custom">Return to Atelier</button>
+                </div>
+            `
+        };
+
+        // --- Render Engine ---
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (state.currentPage === 'home') app.innerHTML = Templates.home();
+            else if (state.currentPage === 'shop') app.innerHTML = Templates.shop();
+            else if (state.currentPage === 'product') {
+                // This handles product detail page using a custom ID mechanism
+                // For the SPA a simpler approach: find which product was clicked
+                // Since navigate('product', id) doesn't store ID in state, we'll use a global variable or URL param
+                // To keep it simple for this demo, let's adapt the state.
+            }
+            else if (state.currentPage === 'cart') app.innerHTML = Templates.cart();
+            else if (state.currentPage === 'checkout') app.innerHTML = Templates.checkout();
+            else if (state.currentPage === 'confirmation') app.innerHTML = Templates.confirmation();
+        }
+
+        // Overwriting navigate for the product page specifically
+        const originalNavigate = navigate;
+        window.navigate = (page, id = null) => {
+            if (page === 'product') {
+                document.getElementById('app').innerHTML = Templates.product(id);
+                state.currentPage = 'product';
+            } else {
+                state.currentPage = page;
+                render();
+            }
+            window.scrollTo(0, 0);
+        };
+
+        // Initial Load
+        render();
+        updateCartCount();
+    </script>
+</body>
+</html>
