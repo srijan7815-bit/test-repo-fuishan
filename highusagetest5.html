@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look4rth | Immersive Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #050505;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            outline: none;
+            z-index: 0;
+        }
+        .scroll-container {
+            position: relative;
+            z-index: 10;
+        }
+        .section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10%;
+            pointer-events: none;
+        }
+        .content-box {
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(50px);
+            pointer-events: all;
+        }
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: black;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease-out;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+        }
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .nav-dot.active {
+            background: #00ffff;
+            box-shadow: 0 0 10px #00ffff;
+            transform: scale(1.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="text-4xl font-bold tracking-tighter mb-4 glow-text">LOOK4RTH</div>
+        <div class="w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
+            <div id="loader-bar" class="h-full bg-cyan-400 w-0 transition-all duration-300"></div>
+        </div>
+        <p class="mt-4 text-xs uppercase tracking-widest text-gray-500">Initializing 3D Environment...</p>
+    </div>
+
+    <!-- Navigation Indicator -->
+    <div class="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
+        <div class="nav-dot active" data-sec="0"></div>
+        <div class="nav-dot" data-sec="1"></div>
+        <div class="nav-dot" data-sec="2"></div>
+        <div class="nav-dot" data-sec="3"></div>
+    </div>
+
+    <!-- Canvas -->
+    <canvas id="webgl"></canvas>
+
+    <!-- Scroll Content -->
+    <div class="scroll-container">
+        <!-- Landing Section -->
+        <section class="section" id="sec0">
+            <div class="content-box text-center" id="box0">
+                <h1 class="text-7xl font-black mb-6 tracking-tighter glow-text">LOOK4RTH</h1>
+                <p class="text-xl text-gray-400 mb-8">A journey through the digital void. Explore the intersection of geometry and narrative.</p>
+                <div class="flex justify-center items-center gap-2 text-cyan-400 animate-bounce">
+                    <span class="text-xs uppercase tracking-widest">Scroll to Enter</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 1: The Core -->
+        <section class="section" id="sec1">
+            <div class="content-box text-left" id="box1">
+                <h2 class="text-5xl font-bold mb-4 glow-text">The Central Core</h2>
+                <p class="text-lg text-gray-400">At the heart of the Look4rth ecosystem lies a singularity of data, pulsing with the rhythm of infinite calculations. Everything begins here.</p>
+                <button onclick="triggerEvent('core')" class="mt-6 px-6 py-2 border border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all duration-300 uppercase text-xs tracking-widest">Analyze Core</button>
+            </div>
+        </section>
+
+        <!-- Section 2: The Network -->
+        <section class="section" id="sec2">
+            <div class="content-box text-right ml-auto" id="box2">
+                <h2 class="text-5xl font-bold mb-4 glow-text">Interconnected</h2>
+                <p class="text-lg text-gray-400">Nodes expanding across the void, weaving a web of synthetic consciousness. Each connection is a bridge between ideas.</p>
+                <button onclick="triggerEvent('network')" class="mt-6 px-6 py-2 border border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-black transition-all duration-300 uppercase text-xs tracking-widest">View Nodes</button>
+            </div>
+        </section>
+
+        <!-- Section 3: The Zenith -->
+        <section class="section" id="sec3">
+            <div class="content-box text-center" id="box3">
+                <h2 class="text-6xl font-black mb-6 glow-text">THE ZENITH</h2>
+                <p class="text-xl text-gray-400 mb-8">Where the simulation ends and the new reality begins. Welcome to the horizon of tomorrow.</p>
+                <button onclick="location.reload()" class="px-8 py-3 bg-cyan-500 text-black font-bold hover:bg-white transition-all duration-300 uppercase text-xs tracking-widest">Restart Journey</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // --- THREE.JS ENGINE ---
+        const canvas = document.querySelector('#webgl');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 2);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0x00ffff, 10, 100);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+        // --- 3D OBJECTS ---
+        
+        // 1. Starfield / Particle System
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 8000;
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i=0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 100;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({ size: 0.02, color: 0x00ffff, transparent: true, opacity: 0.6 });
+        const particleMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particleMesh);
+
+        // 2. The Core (Icosahedron)
+        const coreGeo = new THREE.IcosahedronGeometry(1, 1);
+        const coreMat = new THREE.MeshPhongMaterial({ color: 0x00ffff, wireframe: true, emissive: 0x00ffff, emissiveIntensity: 0.5 });
+        const core = new THREE.Mesh(coreGeo, coreMat);
+        core.position.set(0, 0, -5);
+        scene.add(core);
+
+        // 3. The Network (Torus Knot)
+        const netGeo = new THREE.TorusKnotGeometry(1.5, 0.4, 100, 16);
+        const netMat = new THREE.MeshPhongMaterial({ color: 0xff00ff, wireframe: true, emissive: 0xff00ff, emissiveIntensity: 0.3 });
+        const network = new THREE.Mesh(netGeo, netMat);
+        network.position.set(10, -5, -15);
+        scene.add(network);
+
+        // 4. The Zenith (Large Sphere of Points)
+        const zenithGeo = new THREE.SphereGeometry(5, 64, 64);
+        const zenithMat = new THREE.MeshPhongMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.1 });
+        const zenith = new THREE.Mesh(zenithGeo, zenithMat);
+        zenith.position.set(0, 5, -30);
+        scene.add(zenith);
+
+        camera.position.z = 5;
+
+        // --- ANIMATION & INTERACTION ---
+
+        // Mouse Parallax
+        let mouseX = 0;
+        let mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) - 0.5;
+            mouseY = (e.clientY / window.innerHeight) - 0.5;
+        });
+
+        // GSAP Setup
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Initialize UI visibility
+        gsap.set(".content-box", { opacity: 0, y: 50 });
+
+        // Timeline for Scroll Progress
+        const masterTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".scroll-container",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1,
+                onUpdate: (self) => {
+                    const progress = self.progress;
+                    updateNavDots(progress);
+                }
+            }
+        });
+
+        // Scene 0 -> 1 Transition
+        masterTl.to(camera.position, { z: -2, duration: 1 })
+                .to(core.rotation, { y: Math.PI * 2, duration: 1 }, 0)
+                .to("#box0", { opacity: 0, y: -50, duration: 0.5 }, 0)
+                .to("#box1", { opacity: 1, y: 0, duration: 0.5 }, 0.5);
+
+        // Scene 1 -> 2 Transition
+        masterTl.to(camera.position, { x: 10, y: -5, z: -12, duration: 2 })
+                .to(camera.rotation, { y: Math.PI * 0.2, duration: 2 }, "-=2")
+                .to(network.rotation, { z: Math.PI * 2, duration: 2 }, "-=2")
+                .to("#box1", { opacity: 0, y: -50, duration: 0.5 })
+                .to("#box2", { opacity: 1, y: 0, duration: 0.5 }, "-=0.5");
+
+        // Scene 2 -> 3 Transition
+        masterTl.to(camera.position, { x: 0, y: 5, z: -25, duration: 2 })
+                .to(camera.rotation, { y: 0, x: -0.2, duration: 2 }, "-=2")
+                .to(zenith.scale, { x: 2, y: 2, z: 2, duration: 2 }, "-=2")
+                .to("#box2", { opacity: 0, y: -50, duration: 0.5 })
+                .to("#box3", { opacity: 1, y: 0, duration: 0.5 }, "-=0.5");
+
+        function updateNavDots(progress) {
+            const dots = document.querySelectorAll('.nav-dot');
+            let activeIndex = Math.floor(progress * 4);
+            if(activeIndex > 3) activeIndex = 3;
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === activeIndex);
+            });
+        }
+
+        function triggerEvent(type) {
+            if(type === 'core') {
+                gsap.to(core.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 0.3, yoyo: true, repeat: 1 });
+            } else if(type === 'network') {
+                gsap.to(network.rotation, { x: Math.PI, duration: 1 });
+            }
+        }
+
+        // Render Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Idle Animations
+            core.rotation.x += 0.005;
+            core.rotation.y += 0.005;
+            network.rotation.y += 0.003;
+            zenith.rotation.z += 0.001;
+            particleMesh.rotation.y += 0.0005;
+
+            // Mouse Parallax influence
+            camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY * 0.5 + 5 - camera.position.y) * 0.05; // Adjusted for current section height approx
+
+            renderer.render(scene, camera);
+        }
+
+        // Window Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Loader Sequence
+        window.addEventListener('load', () => {
+            const bar = document.getElementById('loader-bar');
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 30;
+                bar.style.width = Math.min(width, 100) + '%';
+                if(width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loader').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('loader').style.display = 'none';
+                            gsap.to("#box0", { opacity: 1, y: 0, duration: 1 });
+                        }, 1000);
+                    }, 500);
+                }
+            }, 150);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
