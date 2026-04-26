@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOLE — Minimalist Footwear</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .product-card:hover img { transform: scale(1.05); }
+        .cart-drawer { transition: transform 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="bg-zinc-50 text-zinc-900">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-zinc-200">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="#" class="text-xl font-bold tracking-tighter">SOLE.</a>
+            <div class="hidden md:flex space-x-8 text-sm font-medium text-zinc-500">
+                <a href="#shop" class="hover:text-black transition-colors">Shop</a>
+                <a href="#about" class="hover:text-black transition-colors">About</a>
+                <a href="#contact" class="hover:text-black transition-colors">Contact</a>
+            </div>
+            <button onclick="toggleCart()" class="relative p-2 group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:text-zinc-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4l1-12z" />
+                </svg>
+                <span id="cart-count" class="absolute top-0 right-0 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h1 class="text-6xl md:text-8xl font-bold leading-tight tracking-tighter mb-6">
+                    Walk into <br><span class="text-zinc-400">Simplicity.</span>
+                </h1>
+                <p class="text-lg text-zinc-500 mb-8 max-w-md leading-relaxed">
+                    Engineered for comfort, designed for the modern aesthetic. Experience footwear that breathes with you.
+                </p>
+                <a href="#shop" class="inline-block bg-black text-white px-8 py-4 rounded-full font-medium hover:bg-zinc-800 transition-all active:scale-95">
+                    Shop Collection
+                </a>
+            </div>
+            <div class="relative">
+                <div class="aspect-square bg-zinc-200 rounded-3xl overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=1000" alt="Hero Shoe" class="w-full h-full object-cover mix-blend-multiply opacity-90">
+                </div>
+                <div class="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-zinc-100 hidden md:block">
+                    <p class="text-xs text-zinc-400 uppercase font-semibold mb-1">New Arrival</p>
+                    <p class="font-bold">AirGlide Pro 2024</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shop Section -->
+    <section id="shop" class="py-24 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight">Featured Collection</h2>
+                    <p class="text-zinc-500">The essentials for every step.</p>
+                </div>
+                <div class="hidden md:flex space-x-2">
+                    <button class="px-4 py-2 text-sm border border-zinc-200 rounded-full hover:bg-zinc-50 transition-colors">All</button>
+                    <button class="px-4 py-2 text-sm text-zinc-400 hover:text-black transition-colors">Running</button>
+                    <button class="px-4 py-2 text-sm text-zinc-400 hover:text-black transition-colors">Casual</button>
+                </div>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Products injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-24 px-6 bg-zinc-50">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+            <div class="p-8 rounded-3xl bg-white border border-zinc-100 hover:shadow-sm transition-shadow">
+                <div class="w-12 h-12 bg-zinc-100 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Ultra Lightweight</h3>
+                <p class="text-zinc-500 leading-relaxed">Advanced polymer materials ensure you feel like you're walking on air.</p>
+            </div>
+            <div class="p-8 rounded-3xl bg-white border border-zinc-100 hover:shadow-sm transition-shadow">
+                <div class="w-12 h-12 bg-zinc-100 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Premium Quality</h3>
+                <p class="text-zinc-500 leading-relaxed">Hand-stitched precision and durable soles designed to last for years.</p>
+            </div>
+            <div class="p-8 rounded-3xl bg-white border border-zinc-100 hover:shadow-sm transition-shadow">
+                <div class="w-12 h-12 bg-zinc-100 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Sustainable</h3>
+                <p class="text-zinc-500 leading-relaxed">Made from 40% recycled ocean plastics and organic cotton textiles.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="py-12 px-6 border-t border-zinc-200 bg-white">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0">
+                <a href="#" class="text-xl font-bold tracking-tighter">SOLE.</a>
+                <p class="text-sm text-zinc-400 mt-2">© 2024 Sole Footwear Inc.</p>
+            </div>
+            <div class="flex space-x-6 text-sm font-medium text-zinc-500">
+                <a href="#" class="hover:text-black transition-colors">Privacy</a>
+                <a href="#" class="hover:text-black transition-colors">Terms</a>
+                <a href="#" class="hover:text-black transition-colors">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Drawer -->
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[60] shadow-2xl translate-x-full cart-drawer flex flex-col">
+        <div class="p-6 border-b border-zinc-100 flex justify-between items-center">
+            <h2 class="text-xl font-bold">Your Cart</h2>
+            <button onclick="toggleCart()" class="p-2 hover:bg-zinc-100 rounded-full transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-6">
+            <!-- Cart items injected here -->
+            <div class="text-center py-20 text-zinc-400">Your cart is empty.</div>
+        </div>
+        <div class="p-6 border-t border-zinc-100 space-y-4">
+            <div class="flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="w-full bg-black text-white py-4 rounded-full font-medium hover:bg-zinc-800 transition-all active:scale-95">
+                Checkout Now
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, name: "AirGlide Cloud", price: 120, category: "Running", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400" },
+            { id: 2, name: "Urban Stealth", price: 95, category: "Casual", image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&q=80&w=400" },
+            { id: 3, name: "Apex Peak", price: 150, category: "Hiking", image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=400" },
+            { id: 4, name: "Zen Walker", price: 110, category: "Casual", image: "https://images.unsplash.com/photo-1560769629-975ca90475ab?auto=format&fit=crop&q=80&w=400" },
+            { id: 5, name: "Night Runner", price: 130, category: "Running", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=400" },
+            { id: 6, name: "Minimalist White", price: 80, category: "Casual", image: "https://images.unsplash.com/photo-1584735175315-9d77a6767a6c?auto=format&fit=crop&q=80&w=400" },
+            { id: 7, name: "Desert Storm", price: 140, category: "Hiking", image: "https://images.unsplash.com/photo-1539185441755-65f8f965a672?auto=format&fit=crop&q=80&w=400" },
+            { id: 8, name: "Velocity Blue", price: 125, category: "Running", image: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=400" },
+        ];
+
+        let cart = [];
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = products.map(p => `
+                <div class="product-card group cursor-pointer">
+                    <div class="aspect-square bg-zinc-100 rounded-2xl overflow-hidden mb-4 relative">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-500">
+                        <button onclick="addToCart(${p.id})" class="absolute bottom-4 right-4 bg-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black hover:text-white">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-medium text-zinc-900">${p.name}</h3>
+                            <p class="text-sm text-zinc-400">${p.category}</p>
+                        </div>
+                        <span class="font-bold text-zinc-900">$${p.price}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-overlay');
+            drawer.classList.toggle('translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCart();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartList = document.getElementById('cart-items');
+            const count = document.getElementById('cart-count');
+            const total = document.getElementById('cart-total');
+            
+            const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
+            const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            
+            count.innerText = totalItems;
+            total.innerText = `$${totalPrice.toFixed(2)}`;
+            
+            if (cart.length === 0) {
+                cartList.innerHTML = `<div class="text-center py-20 text-zinc-400">Your cart is empty.</div>`;
+            } else {
+                cartList.innerHTML = cart.map(item => `
+                    <div class="flex items-center gap-4">
+                        <img src="${item.image}" class="w-20 h-20 object-cover rounded-lg bg-zinc-100">
+                        <div class="flex-1">
+                            <h4 class="font-medium">${item.name}</h4>
+                            <p class="text-sm text-zinc-400">$${item.price} x ${item.qty}</p>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-zinc-300 hover:text-red-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Init
+        renderProducts();
+    </script>
+</body>
+</html>
