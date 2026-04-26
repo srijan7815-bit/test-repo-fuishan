@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Minimalist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa;
+            color: #171717;
+            scroll-behavior: smooth;
+        }
+        .page-transition {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.2s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: #171717;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .active-link::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-zinc-200">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="text-lg font-bold tracking-tighter cursor-pointer" onclick="navigateTo('home')">
+                FUISHAN<span class="text-zinc-400">.</span>
+            </div>
+            <div class="flex gap-8 text-sm font-medium">
+                <button onclick="navigateTo('home')" id="link-home" class="nav-link active-link">Home</button>
+                <button onclick="navigateTo('about')" id="link-about" class="nav-link">About</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="pt-32 pb-20 max-w-5xl mx-auto px-6">
+        
+        <!-- HOME PAGE -->
+        <section id="page-home" class="page-transition opacity-100 block">
+            <div class="max-w-3xl">
+                <h1 class="text-6xl md:text-8xl font-bold tracking-tighter leading-tight mb-8">
+                    Building digital <br>
+                    <span class="text-zinc-400">experiences.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-zinc-500 mb-12 leading-relaxed max-w-xl">
+                    A multidisciplinary designer and developer focusing on clean interfaces, 
+                    minimalist aesthetics, and high-performance web applications.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="group p-8 border border-zinc-200 rounded-2xl hover:border-zinc-400 transition-all cursor-pointer bg-white">
+                        <div class="text-xs font-medium text-zinc-400 uppercase tracking-widest mb-4">Project 01</div>
+                        <h3 class="text-xl font-semibold mb-2">Neural Interface</h3>
+                        <p class="text-zinc-500 text-sm mb-6">An exploration of AI-driven UI components for modern dashboards.</p>
+                        <div class="w-full h-48 bg-zinc-100 rounded-lg group-hover:bg-zinc-200 transition-colors"></div>
+                    </div>
+                    <div class="group p-8 border border-zinc-200 rounded-2xl hover:border-zinc-400 transition-all cursor-pointer bg-white">
+                        <div class="text-xs font-medium text-zinc-400 uppercase tracking-widest mb-4">Project 02</div>
+                        <h3 class="text-xl font-semibold mb-2">Zenith Studio</h3>
+                        <p class="text-zinc-500 text-sm mb-6">Minimalist architectural portfolio with seamless page transitions.</p>
+                        <div class="w-full h-48 bg-zinc-100 rounded-lg group-hover:bg-zinc-200 transition-colors"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT PAGE -->
+        <section id="page-about" class="page-transition opacity-0 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="md:col-span-1">
+                    <div class="aspect-square bg-zinc-200 rounded-3xl overflow-hidden mb-6">
+                        <!-- Placeholder for Profile Image -->
+                        <div class="w-full h-full flex items-center justify-center text-zinc-400 italic">
+                            Photo
+                        </div>
+                    </div>
+                    <h2 class="text-2xl font-bold tracking-tight">Developer & Designer</h2>
+                    <p class="text-zinc-500 text-sm mt-2">Based in the digital void.</p>
+                </div>
+                
+                <div class="md:col-span-2">
+                    <h2 class="text-4xl font-bold tracking-tighter mb-8">About Me</h2>
+                    <div class="space-y-6 text-zinc-600 leading-relaxed text-lg">
+                        <p>
+                            I believe that great design is invisible. My approach is centered around removing the unnecessary 
+                            until only the core essence of the product remains.
+                        </p>
+                        <p>
+                            With a background in both frontend engineering and visual design, I bridge the gap between 
+                            complex technical requirements and elegant user experiences.
+                        </p>
+                    </div>
+
+                    <div class="mt-12">
+                        <h3 class="text-sm font-semibold uppercase tracking-widest text-zinc-400 mb-6">Expertise</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2 bg-white border border-zinc-200 rounded-full text-sm font-medium">TypeScript</span>
+                            <span class="px-4 py-2 bg-white border border-zinc-200 rounded-full text-sm font-medium">React / Next.js</span>
+                            <span class="px-4 py-2 bg-white border border-zinc-200 rounded-full text-sm font-medium">Tailwind CSS</span>
+                            <span class="px-4 py-2 bg-white border border-zinc-200 rounded-full text-sm font-medium">Figma</span>
+                            <span class="px-4 py-2 bg-white border border-zinc-200 rounded-full text-sm font-medium">Node.js</span>
+                            <span class="px-4 py-2 bg-white border border-zinc-200 rounded-full text-sm font-medium">Three.js</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-16 pt-8 border-t border-zinc-200">
+                        <button onclick="navigateTo('home')" class="text-sm font-bold hover:underline flex items-center gap-2">
+                            ← Back to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-5xl mx-auto px-6 py-12 border-t border-zinc-200 text-zinc-400 text-xs flex justify-between items-center">
+        <p>© 2024 FUISHAN. All rights reserved.</p>
+        <div class="flex gap-4">
+            <a href="#" class="hover:text-black transition-colors">Twitter</a>
+            <a href="#" class="hover:text-black transition-colors">GitHub</a>
+            <a href="#" class="hover:text-black transition-colors">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script>
+        function navigateTo(pageId) {
+            const homePage = document.getElementById('page-home');
+            const aboutPage = document.getElementById('page-about');
+            const homeLink = document.getElementById('link-home');
+            const aboutLink = document.getElementById('link-about');
+
+            // Fade out current page
+            const currentPage = homePage.classList.contains('hidden') ? aboutPage : homePage;
+            currentPage.style.opacity = '0';
+
+            setTimeout(() => {
+                // Switch visibility
+                if (pageId === 'home') {
+                    aboutPage.classList.add('hidden');
+                    homePage.classList.remove('hidden');
+                    
+                    homeLink.classList.add('active-link');
+                    aboutLink.classList.remove('active-link');
+                    
+                    homePage.style.opacity = '1';
+                } else {
+                    homePage.classList.add('hidden');
+                    aboutPage.classList.remove('hidden');
+                    
+                    aboutLink.classList.add('active-link');
+                    homeLink.classList.remove('active-link');
+                    
+                    aboutPage.style.opacity = '1';
+                }
+            }, 300);
+        }
+    </script>
+</body>
+</html>
