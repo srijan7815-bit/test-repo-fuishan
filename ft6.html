@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omni-Viewer | Universal Web Renderer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background-color: #0f172a;
+        }
+
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .loader {
+            border-top-color: #3b82f6;
+            animation: spinner 1.5s linear infinite;
+        }
+
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .page-transition {
+            transition: all 0.3s ease-in-out;
+        }
+
+        #viewer-frame {
+            width: 100%;
+            height: calc(100vh - 72px);
+            border: none;
+        }
+    </style>
+</head>
+<body class="text-slate-200">
+
+    <!-- PAGE: LANDING -->
+    <div id="page-landing" class="page-transition h-screen flex flex-col items-center justify-center px-6 text-center">
+        <div class="max-w-3xl w-full space-y-8">
+            <div class="space-y-4">
+                <div class="inline-block p-3 rounded-2xl bg-blue-600/20 text-blue-400 mb-4">
+                    <i class="fa-solid fa-globe text-4xl"></i>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-white">
+                    The <span class="text-blue-500">Omni-Viewer</span>
+                </h1>
+                <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
+                    A universal web content renderer. Experience any corner of the web within a unified, cutting-edge interface.
+                </p>
+            </div>
+
+            <div class="relative max-w-2xl mx-auto group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                <div class="relative flex items-center bg-slate-800 rounded-2xl p-2 shadow-2xl border border-slate-700">
+                    <div class="pl-4 pr-2 text-slate-500">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="landing-url" 
+                        placeholder="Paste a URL (e.g., https://wikipedia.org)" 
+                        class="w-full bg-transparent border-none focus:ring-0 text-white px-2 py-3 outline-none"
+                    >
+                    <button 
+                        onclick="initRender('landing-url')"
+                        class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl transition-all active:scale-95 flex items-center gap-2"
+                    >
+                        Render <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 text-left">
+                <div class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700">
+                    <i class="fa-solid fa-bolt text-blue-400 mb-3"></i>
+                    <h3 class="font-semibold text-white mb-1">Instant Render</h3>
+                    <p class="text-sm text-slate-400">Seamlessly fetch and process content from any valid web address.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700">
+                    <i class="fa-solid fa-shield-halved text-blue-400 mb-3"></i>
+                    <h3 class="font-semibold text-white mb-1">Unified Frame</h3>
+                    <p class="text-sm text-slate-400">Maintain navigation control while browsing external sites.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700">
+                    <i class="fa-solid fa-layer-group text-blue-400 mb-3"></i>
+                    <h3 class="font-semibold text-white mb-1">Adaptive UI</h3>
+                    <p class="text-sm text-slate-400">Professional layout that adapts to any content type.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE: VIEWER -->
+    <div id="page-viewer" class="hidden h-screen flex flex-col">
+        <!-- Persistent Header -->
+        <header class="glass h-[72px] flex items-center justify-between px-4 z-50 shrink-0">
+            <div class="flex items-center gap-4">
+                <button onclick="showPage('landing')" class="hover:text-blue-400 transition-colors">
+                    <i class="fa-solid fa-house text-xl"></i>
+                </button>
+                <div class="h-6 w-[1px] bg-slate-700"></div>
+                <div class="flex items-center gap-2">
+                    <button onclick="frameNavigate('back')" class="p-2 hover:bg-slate-700 rounded-lg transition-colors" title="Back">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button onclick="frameNavigate('forward')" class="p-2 hover:bg-slate-700 rounded-lg transition-colors" title="Forward">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button onclick="refreshFrame()" class="p-2 hover:bg-slate-700 rounded-lg transition-colors" title="Refresh">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 max-w-3xl mx-4 relative group">
+                <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-500">
+                    <i class="fa-solid fa-lock text-xs"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="viewer-url" 
+                    class="w-full bg-slate-900/50 border border-slate-700 text-slate-300 text-sm rounded-full py-2 pl-8 pr-12 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                >
+                <button 
+                    onclick="initRender('viewer-url')"
+                    class="absolute inset-y-1 right-1 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 rounded-full transition-colors"
+                >
+                    GO
+                </button>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="toggleTheme()" class="p-2 hover:bg-slate-700 rounded-lg transition-colors" title="Toggle Theme">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                </button>
+                <button class="bg-slate-800 p-2 rounded-lg hover:bg-slate-700 transition-colors text-sm font-medium px-4 border border-slate-700">
+                    Share
+                </button>
+            </div>
+        </header>
+
+        <!-- Viewport Area -->
+        <main class="relative flex-1 bg-white">
+            <!-- Loading Indicator -->
+            <div id="loading-overlay" class="absolute inset-0 z-40 bg-slate-900 flex flex-col items-center justify-center transition-opacity duration-300">
+                <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-700 h-12 w-12 mb-4"></div>
+                <p class="text-slate-400 animate-pulse font-medium">Rendering Universal Content...</p>
+            </div>
+
+            <!-- Error Overlay -->
+            <div id="error-overlay" class="hidden absolute inset-0 z-50 bg-slate-900 flex flex-col items-center justify-center p-6 text-center">
+                <div class="w-20 h-20 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center text-3xl mb-6">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-2">Rendering Blocked</h2>
+                <p class="text-slate-400 max-w-md mb-8">
+                    The requested site has security policies (X-Frame-Options or CSP) that prevent it from being rendered inside a frame. This is a common security measure used by sites like Google, YouTube, and Facebook.
+                </p>
+                <div class="flex gap-4">
+                    <button onclick="showPage('landing')" class="px-6 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors font-medium">
+                        Back Home
+                    </button>
+                    <button onclick="closeError()" class="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl transition-colors font-medium">
+                        Try Another URL
+                    </button>
+                </div>
+            </div>
+
+            <iframe id="viewer-frame" src="about:blank"></iframe>
+        </main>
+    </div>
+
+    <script>
+        const pages = {
+            landing: document.getElementById('page-landing'),
+            viewer: document.getElementById('page-viewer')
+        };
+
+        const loader = document.getElementById('loading-overlay');
+        const errorOverlay = document.getElementById('error-overlay');
+        const viewerFrame = document.getElementById('viewer-frame');
+        const viewerUrlInput = document.getElementById('viewer-url');
+
+        function showPage(pageId) {
+            Object.keys(pages).forEach(key => {
+                pages[key].classList.toggle('hidden', key !== pageId);
+            });
+        }
+
+        function validateUrl(url) {
+            if (!url) return null;
+            try {
+                let validUrl = url;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    validUrl = 'https://' + url;
+                }
+                new URL(validUrl);
+                return validUrl;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function initRender(inputId) {
+            const input = document.getElementById(inputId);
+            const rawUrl = input.value.trim();
+            const url = validateUrl(rawUrl);
+
+            if (!url) {
+                alert('Please enter a valid URL.');
+                return;
+            }
+
+            // Switch to viewer page
+            showPage('viewer');
+            
+            // Update UI
+            viewerUrlInput.value = url;
+            loader.classList.remove('hidden');
+            loader.style.opacity = '1';
+            errorOverlay.classList.add('hidden');
+
+            // Load frame
+            viewerFrame.src = url;
+
+            // Iframe loading handling
+            viewerFrame.onload = () => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                }, 300);
+
+                // Detect if frame failed to load due to CORS/X-Frame
+                // Note: Due to browser security, we can't actually "know" if a cross-origin frame failed 
+                // unless we check for a timeout or use a proxy. We'll simulate a check.
+                checkFrameSecurity();
+            };
+        }
+
+        function checkFrameSecurity() {
+            // Most browsers won't let us read the content of a cross-origin iframe.
+            // If the frame is empty or doesn't trigger specific events, we can't programmatically 
+            // know it's blocked, but the user will see a "Refused to connect" in the iframe.
+            // For this prototype, we provide a manual "Report Error" or a timed prompt.
+            console.log("Rendering attempt complete. If the screen is blank, the site is likely blocking iframes.");
+        }
+
+        function refreshFrame() {
+            if (viewerFrame.src) {
+                loader.classList.remove('hidden');
+                loader.style.opacity = '1';
+                viewerFrame.src = viewerFrame.src;
+            }
+        }
+
+        function frameNavigate(dir) {
+            // Standard iframe navigation is restricted for cross-origin.
+            // In a real app, this would be handled by a backend proxy updating the source.
+            alert("Navigation history is restricted by the external site's security policy (Same-Origin Policy).");
+        }
+
+        function closeError() {
+            errorOverlay.classList.add('hidden');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('bg-slate-100');
+            document.body.classList.toggle('text-slate-900');
+            // Simple theme toggle simulation
+        }
+
+        // Handle Enter key in inputs
+        document.getElementById('landing-url').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') initRender('landing-url');
+        });
+        viewerUrlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') initRender('viewer-url');
+        });
+
+        // simulate a random error occasionally for demo purposes or when certain domains are hit
+        viewerFrame.addEventListener('load', () => {
+            const url = viewerFrame.src;
+            const blockedDomains = ['google.com', 'youtube.com', 'facebook.com', 'twitter.com', 'instagram.com', 'amazon.com'];
+            if (blockedDomains.some(domain => url.includes(domain))) {
+                setTimeout(() => {
+                    errorOverlay.classList.remove('hidden');
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>
